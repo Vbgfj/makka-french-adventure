@@ -1,0 +1,28 @@
+{
+  "name": "makka-french-adventure",
+  "version": "1.0.0",
+  "description": "Makka French Adventure - Offline-First Educational Android Game for Mr. Alaa Eid (Makka Center)",
+  "main": "www/index.html",
+  "scripts": {
+    "cap:add": "npx cap add android",
+    "cap:sync": "npx cap sync android"
+  },
+  "keywords": [
+    "education",
+    "french",
+    "android",
+    "capacitor",
+    "game"
+  ],
+  "author": "Mr. Alaa Eid - Makka Center",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.2",
+    "@capacitor/core": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^6.2.0"
+  }
+}
