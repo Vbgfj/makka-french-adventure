@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <title>Makka French Adventure — By Mr. Alaa Eid</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- SCREEN 1: SPLASH SCREEN -->
+    <section id="screen-splash" class="screen active">
+      <div class="splash-bg-stars"></div>
+      <div class="splash-card animate-pop">
+        <div class="splash-badge">1ère Année Secondaire • 2026–2027</div>
+        <div class="splash-emblem">🏰✨🇫🇷</div>
+        <h1 class="game-title">Makka French Adventure</h1>
+        <p class="game-tagline">Learn French Through Adventure!</p>
+        <div class="teacher-banner">
+          <span class="teacher-name">By Mr. Alaa Eid • مستر علاء عيد</span>
+          <span class="center-name">Makka Center • سنتر مكة</span>
+        </div>
+        <div class="splash-loader">
+          <div class="splash-loader-bar" id="splash-progress"></div>
+        </div>
+        <p class="splash-loading-text">Chargement de l'aventure...</p>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: MAIN MENU -->
+    <section id="screen-menu" class="screen">
+      <div class="menu-header">
+        <div class="brand-pill">Makka Center • سنتر مكة</div>
+        <h1 class="menu-title">Makka French Adventure</h1>
+        <p class="menu-subtitle">Learn French Through Adventure! — <strong>By Mr. Alaa Eid</strong></p>
+      </div>
+
+      <div class="menu-stats-bar">
+        <div class="stat-chip">🪙 <span id="menu-total-coins">0</span></div>
+        <div class="stat-chip">⭐ <span id="menu-total-stars">0</span></div>
+        <div class="stat-chip">🏆 <span id="menu-total-score">0</span> pts</div>
+      </div>
+
+      <nav class="menu-buttons">
+        <button id="btn-start-adventure" class="btn btn-primary btn-lg">
+          <span>🎮</span> START ADVENTURE
+        </button>
+        <button id="btn-continue-game" class="btn btn-success" disabled>
+          <span>▶️</span> CONTINUE GAME
+        </button>
+        <button id="btn-select-lesson" class="btn btn-secondary">
+          <span>🗺️</span> SELECT LESSON
+        </button>
+        <div class="menu-row-2">
+          <button id="btn-how-to-play" class="btn btn-info">
+            <span>📖</span> HOW TO PLAY
+          </button>
+          <button id="btn-settings" class="btn btn-warning">
+            <span>⚙️</span> SETTINGS
+          </button>
+        </div>
+        <button id="btn-exit" class="btn btn-danger-outline">
+          <span>🚪</span> EXIT
+        </button>
+      </nav>
+
+      <footer class="menu-footer">
+        Created for <strong>Mr. Alaa Eid</strong> — <strong>Makka Center</strong> | Offline Edition
+      </footer>
+    </section>
+
+    <!-- SCREEN 3: CHARACTER SELECTION -->
+    <section id="screen-characters" class="screen">
+      <div class="top-bar">
+        <button class="btn-back" data-target="screen-menu">← Back</button>
+        <h2>Choose Your Hero</h2>
+        <div class="spacer"></div>
+      </div>
+      <p class="screen-hint">اختار بطل المغامرة اللي هيكمل معاك رحلة تعلم الفرنسية!</p>
+
+      <div class="characters-grid" id="characters-grid">
+        <div class="character-card selected" data-char="boy">
+          <canvas class="char-preview" id="preview-boy" width="110" height="110"></canvas>
+          <h3>Adventure Boy</h3>
+          <p>المغامر الشجاع</p>
+        </div>
+        <div class="character-card" data-char="girl">
+          <canvas class="char-preview" id="preview-girl" width="110" height="110"></canvas>
+          <h3>Adventure Girl</h3>
+          <p>المستكشفة الذكية</p>
+        </div>
+        <div class="character-card" data-char="fox">
+          <canvas class="char-preview" id="preview-fox" width="110" height="110"></canvas>
+          <h3>Friendly Fox</h3>
+          <p>الثعلب السريع</p>
+        </div>
+        <div class="character-card" data-char="robot">
+          <canvas class="char-preview" id="preview-robot" width="110" height="110"></canvas>
+          <h3>Cute Robot</h3>
+          <p>الروبوت العبقري</p>
+        </div>
+      </div>
+
+      <div class="bottom-action">
+        <button id="btn-confirm-character" class="btn btn-primary btn-lg">
+          NEXT: CHOOSE WORLD 🚀
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: LESSON SELECTION -->
+    <section id="screen-lessons" class="screen">
+      <div class="top-bar">
+        <button class="btn-back" data-target="screen-characters">← Hero</button>
+        <h2>Adventure Worlds</h2>
+        <button class="btn-back" data-target="screen-menu">🏠</button>
+      </div>
+      <p class="screen-hint">منهج الصف الأول الثانوي — الترم الأول (مستر علاء عيد)</p>
+
+      <div class="lessons-list" id="lessons-list">
+        <!-- Populated dynamically from curriculum.json -->
+      </div>
+    </section>
+
+    <!-- SCREEN 5: GAMEPLAY -->
+    <section id="screen-game" class="screen">
+      <div class="game-hud">
+        <div class="hud-left">
+          <button id="btn-pause" class="hud-btn" aria-label="Pause">⏸️</button>
+          <div class="hud-lesson-badge" id="hud-lesson-name">Unité 1 - Leçon 1</div>
+        </div>
+        <div class="hud-center">
+          <div class="progress-wrapper">
+            <div class="progress-fill" id="hud-progress-bar"></div>
+          </div>
+          <span class="progress-label" id="hud-progress-text">0 / 5</span>
+        </div>
+        <div class="hud-right">
+          <div class="hud-pill">🪙 <span id="hud-coins">0</span></div>
+          <div class="hud-pill">⭐ <span id="hud-score">0</span></div>
+        </div>
+      </div>
+
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- On-screen Touch Controls -->
+      <div class="touch-controls" id="touch-controls">
+        <div class="touch-left">
+          <button id="ctrl-left" class="ctrl-btn">◀</button>
+          <button id="ctrl-right" class="ctrl-btn">▶</button>
+        </div>
+        <div class="touch-center-hint" id="game-banner-msg">
+          امشِ لقدام لحد بوابة التحدي! 🚩
+        </div>
+        <div class="touch-right">
+          <button id="ctrl-jump" class="ctrl-btn ctrl-jump">JUMP ▲</button>
+        </div>
+      </div>
+
+      <!-- Educational Checkpoint Modal -->
+      <div id="question-modal" class="modal hidden">
+        <div class="modal-card question-card">
+          <div class="q-header">
+            <span class="q-badge" id="q-type-badge">Checkpoint 1/5</span>
+            <button id="btn-speak-question" class="btn-speak" title="Listen">🔊 النطق</button>
+          </div>
+          <p class="q-topic" id="q-topic">Se présenter</p>
+          <h3 class="q-prompt" id="q-prompt">Question text here...</h3>
+          <p class="q-hint-ar" id="q-hint-ar"></p>
+
+          <!-- Dynamic Answer Area -->
+          <div id="q-options-container" class="q-options"></div>
+
+          <!-- Feedback Banner -->
+          <div id="q-feedback" class="q-feedback hidden"></div>
+        </div>
+      </div>
+
+      <!-- Pause Modal -->
+      <div id="pause-modal" class="modal hidden">
+        <div class="modal-card compact-card">
+          <h2>⏸️ Game Paused</h2>
+          <p>Makka French Adventure — Mr. Alaa Eid</p>
+          <div class="modal-actions">
+            <button id="btn-resume" class="btn btn-success">▶️ RESUME</button>
+            <button id="btn-restart-level" class="btn btn-warning">🔄 RESTART LESSON</button>
+            <button id="btn-quit-to-menu" class="btn btn-danger-outline">🏠 MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: VICTORY SCREEN -->
+    <section id="screen-victory" class="screen">
+      <div class="victory-card animate-pop">
+        <div class="victory-confetti">🎉🏆✨</div>
+        <h1 class="victory-title">FÉLICITATIONS, CHAMPION !</h1>
+        <p class="victory-sub">You completed the adventure!</p>
+
+        <div class="victory-stars" id="victory-stars">⭐⭐⭐</div>
+
+        <div class="victory-stats">
+          <div class="v-stat">
+            <span class="v-label">Final Score</span>
+            <span class="v-val" id="v-score">0</span>
+          </div>
+          <div class="v-stat">
+            <span class="v-label">Correct</span>
+            <span class="v-val text-green" id="v-correct">0</span>
+          </div>
+          <div class="v-stat">
+            <span class="v-label">Incorrect</span>
+            <span class="v-val text-red" id="v-incorrect">0</span>
+          </div>
+          <div class="v-stat">
+            <span class="v-label">Accuracy</span>
+            <span class="v-val" id="v-accuracy">100%</span>
+          </div>
+        </div>
+
+        <div class="victory-credit">
+          Created for <strong>Mr. Alaa Eid — Makka Center</strong>
+        </div>
+
+        <div class="victory-buttons">
+          <button id="btn-next-lesson" class="btn btn-primary btn-lg">NEXT LESSON ➡️</button>
+          <div class="menu-row-2">
+            <button id="btn-play-again" class="btn btn-success">🔄 PLAY AGAIN</button>
+            <button id="btn-victory-menu" class="btn btn-secondary">🏠 MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO PLAY MODAL -->
+    <div id="howto-modal" class="modal hidden">
+      <div class="modal-card">
+        <h2>📖 How To Play — طريقة اللعب</h2>
+        <ul class="howto-list">
+          <li>🏃‍♂️ حرّك بطلك يمين وشمال واقفز فوق المنصات واجمع العملات الذهبية.</li>
+          <li>🚩 عند كل بوابة تحدي، هيظهر لك سؤال من منهج اللغة الفرنسية.</li>
+          <li>✅ <strong>الإجابة الصحيحة:</strong> بتاخد 10 نقط + عملة ذهبية، وبطلك بينط ويعبر الحاجز بنجاح!</li>
+          <li>💡 <strong>الإجابة الخاطئة:</strong> مفيش خسارة لللعبة! بطلك بيقع بشكل كرتوني مضحك ويرجع يكمل المغامرة للسؤال اللي بعده.</li>
+          <li>📴 اللعبة تعمل <strong>100% بدون إنترنت</strong> في أي وقت!</li>
+        </ul>
+        <button class="btn btn-primary close-modal-btn" data-modal="howto-modal">فهمت، يلا نلعب! 🎮</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal hidden">
+      <div class="modal-card">
+        <h2>⚙️ Settings — الإعدادات</h2>
+        <div class="setting-row">
+          <span>🔊 المؤثرات الصوتية (Sound Effects)</span>
+          <input type="checkbox" id="toggle-sfx" checked />
+        </div>
+        <div class="setting-row">
+          <span>🗣️ نطق الكلمات الفرنسية (French TTS)</span>
+          <input type="checkbox" id="toggle-tts" checked />
+        </div>
+        <div class="setting-row">
+          <span>🗑️ مسح التقدم المحفوظ (Reset Progress)</span>
+          <button id="btn-reset-progress" class="btn btn-sm btn-danger-outline">Reset</button>
+        </div>
+        <button class="btn btn-primary close-modal-btn" data-modal="settings-modal">حفظ وإغلاق ✅</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Local Offline Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
