@@ -1,9 +1,16 @@
 /* =========================================================
-   MAKKA FRENCH ADVENTURE — Cartoon Characters & Animator
+   MAKKA FRENCH ADVENTURE — 3D-Style Sprites & Animator
    Created for Mr. Alaa Eid — Makka Center
    ========================================================= */
 
 const PlayerController = (() => {
+  const SPRITE_PATHS = {
+    boy: 'assets/images/hero_boy.png',
+    girl: 'assets/images/hero_girl.png',
+    fox: 'assets/images/hero_fox.png',
+    robot: 'assets/images/hero_robot.png'
+  };
+
   const CHAR_PALETTES = {
     boy: {
       skin: '#fed7aa',
@@ -38,17 +45,167 @@ const PlayerController = (() => {
     }
   };
 
+  // Processed transparent sprite canvases & pending preview canvases
+  const processedSprites = {};
+  const pendingPreviews = {};
+
+  /**
+   * Removes exterior solid white studio background using edge-connected BFS flood-fill
+   * while preserving white details inside the character (eyes, teeth, fur, helmet),
+   * smooths outer edges, and tightly crops transparent margins.
+   */
+  function processCharacterSprite(img) {
+    const maxDim = 384;
+    const scale = Math.min(1, maxDim / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height));
+    const w = Math.max(1, Math.round((img.naturalWidth || img.width) * scale));
+    const h = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = w;
+    tempCanvas.height = h;
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    tempCtx.drawImage(img, 0, 0, w, h);
+
+    const imgData = tempCtx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+    const total = w * h;
+    const visited = new Uint8Array(total);
+    const queue = new Int32Array(total);
+    let head = 0;
+    let tail = 0;
+
+    function isNearWhiteBg(idx) {
+      const p = idx * 4;
+      const a = data[p + 3];
+      if (a < 25) return true;
+      const r = data[p];
+      const g = data[p + 1];
+      const b = data[p + 2];
+      const minC = Math.min(r, g, b);
+      const maxC = Math.max(r, g, b);
+      return minC >= 224 && (maxC - minC) <= 26;
+    }
+
+    function tryEnqueue(x, y) {
+      if (x < 0 || x >= w || y < 0 || y >= h) return;
+      const idx = y * w + x;
+      if (visited[idx]) return;
+      if (isNearWhiteBg(idx)) {
+        visited[idx] = 1;
+        queue[tail++] = idx;
+      }
+    }
+
+    // Seed flood-fill from all 4 outer edges
+    for (let x = 0; x < w; x++) {
+      tryEnqueue(x, 0);
+      tryEnqueue(x, h - 1);
+    }
+    for (let y = 0; y < h; y++) {
+      tryEnqueue(0, y);
+      tryEnqueue(w - 1, y);
+    }
+
+    while (head < tail) {
+      const curr = queue[head++];
+      data[curr * 4 + 3] = 0;
+
+      const cx = curr % w;
+      const cy = (curr - cx) / w;
+      if (cx > 0) tryEnqueue(cx - 1, cy);
+      if (cx + 1 < w) tryEnqueue(cx + 1, cy);
+      if (cy > 0) tryEnqueue(cx, cy - 1);
+      if (cy + 1 < h) tryEnqueue(cx, cy + 1);
+    }
+
+    // Soften 1px anti-aliased fringe along outer outline so there is no white halo
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const idx = y * w + x;
+        if (visited[idx]) continue;
+
+        const hasTransparentNeighbor =
+          visited[idx - 1] ||
+          visited[idx + 1] ||
+          visited[idx - w] ||
+          visited[idx + w];
+
+        if (hasTransparentNeighbor) {
+          const p = idx * 4;
+          const lum = (data[p] + data[p + 1] + data[p + 2]) / 3;
+          if (lum > 185) {
+            const factor = Math.max(0.12, Math.min(1, (252 - lum) / 67));
+            data[p + 3] = Math.round(data[p + 3] * factor);
+          }
+        }
+      }
+    }
+
+    tempCtx.putImageData(imgData, 0, 0);
+
+    // Compute tight non-transparent bounding box
+    let minX = w;
+    let minY = h;
+    let maxX = 0;
+    let maxY = 0;
+    let foundAny = false;
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const alpha = data[(y * w + x) * 4 + 3];
+        if (alpha > 18) {
+          foundAny = true;
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+
+    if (!foundAny) {
+      return tempCanvas;
+    }
+
+    const cropW = Math.max(1, maxX - minX + 1);
+    const cropH = Math.max(1, maxY - minY + 1);
+    const cleanCanvas = document.createElement('canvas');
+    cleanCanvas.width = cropW;
+    cleanCanvas.height = cropH;
+    const cleanCtx = cleanCanvas.getContext('2d');
+    cleanCtx.drawImage(tempCanvas, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+
+    return cleanCanvas;
+  }
+
+  function preloadAllSprites() {
+    Object.keys(SPRITE_PATHS).forEach((charId) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          processedSprites[charId] = processCharacterSprite(img);
+        } catch (err) {
+          processedSprites[charId] = img;
+        }
+        if (pendingPreviews[charId]) {
+          renderPreview(pendingPreviews[charId], charId);
+        }
+      };
+      img.src = SPRITE_PATHS[charId];
+    });
+  }
+
   function createPlayer(charId = 'boy', startX = 90, startY = 260) {
     return {
       charId: CHAR_PALETTES[charId] ? charId : 'boy',
       x: startX,
       y: startY,
-      w: 44,
-      h: 58,
+      w: 48,
+      h: 68,
       vx: 0,
       vy: 0,
-      speed: 4.6,
-      jumpForce: -13.2,
+      speed: 4.8,
+      jumpForce: -13.4,
       onGround: false,
       facing: 1,
       animTimer: 0,
@@ -89,7 +246,7 @@ const PlayerController = (() => {
     player.vx = 9.5;
     player.onGround = false;
     player.state = 'celebrate';
-    player.celebrateTimer = 42;
+    player.celebrateTimer = 44;
     AudioManager.playJump();
   }
 
@@ -113,6 +270,7 @@ const PlayerController = (() => {
     }
 
     PhysicsEngine.applyEntityPhysics(player, platforms, groundY, worldWidth);
+    player.animTimer += 1;
 
     // Handle special animation timers
     if (player.tumbleTimer > 0) {
@@ -143,271 +301,179 @@ const PlayerController = (() => {
       player.state = 'jump';
     } else if (Math.abs(player.vx) > 0.4) {
       player.state = 'run';
-      player.animTimer += 1;
-      if (player.animTimer >= 5) {
-        player.animTimer = 0;
+      if (player.animTimer % 5 === 0) {
         player.animPhase = (player.animPhase + 1) % 4;
       }
     } else {
       player.state = 'idle';
-      player.animTimer += 1;
-      if (player.animTimer >= 18) {
-        player.animTimer = 0;
+      if (player.animTimer % 18 === 0) {
         player.animPhase = (player.animPhase + 1) % 2;
       }
     }
   }
 
-  function drawCharacterFigure(ctx, charId, w, h, state, animPhase) {
+  // Graceful vector fallback only if sprite image is still loading
+  function drawFallbackVector(ctx, charId, w, h, state, animPhase) {
     const legSwing = state === 'run' ? Math.sin((animPhase / 4) * Math.PI * 2) * 6 : 0;
-    const bobY = state === 'idle' ? (animPhase === 1 ? -2 : 0) : (state === 'run' ? -Math.abs(legSwing) * 0.3 : 0);
+    const p = CHAR_PALETTES[charId] || CHAR_PALETTES.boy;
 
-    // Ground shadow
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.25)';
+    ctx.fillStyle = p.outfit || p.fur || p.body || '#1d4ed8';
     ctx.beginPath();
-    ctx.ellipse(0, h / 2 - 2, w * 0.38, 5, 0, 0, Math.PI * 2);
+    ctx.roundRect(-14, -12, 28, 24, 8);
     ctx.fill();
 
-    ctx.save();
-    ctx.translate(0, bobY);
+    ctx.fillStyle = p.skin || p.fur || p.head || '#fed7aa';
+    ctx.beginPath();
+    ctx.arc(0, -24, 14, 0, Math.PI * 2);
+    ctx.fill();
 
-    if (charId === 'boy' || charId === 'girl') {
-      const p = CHAR_PALETTES[charId];
-
-      // Legs
-      ctx.fillStyle = p.pants;
-      ctx.fillRect(-10, 8 + legSwing * 0.4, 7, 14);
-      ctx.fillRect(3, 8 - legSwing * 0.4, 7, 14);
-
-      // Shoes
-      ctx.fillStyle = p.shoes;
-      ctx.beginPath();
-      ctx.roundRect(-12, 20 + legSwing * 0.4, 10, 6, 3);
-      ctx.roundRect(2, 20 - legSwing * 0.4, 10, 6, 3);
-      ctx.fill();
-
-      // Torso / Adventure Jacket
-      ctx.fillStyle = p.outfit;
-      ctx.beginPath();
-      ctx.roundRect(-13, -10, 26, 20, 6);
-      ctx.fill();
-
-      // Golden Explorer Scarf
-      ctx.fillStyle = p.accent;
-      ctx.beginPath();
-      ctx.roundRect(-12, -11, 24, 5, 3);
-      ctx.fill();
-
-      // Head
-      ctx.fillStyle = p.skin;
-      ctx.beginPath();
-      ctx.arc(0, -21, 13, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Hair / Explorer Cap
-      ctx.fillStyle = p.hair;
-      ctx.beginPath();
-      ctx.arc(0, -24, 13.5, Math.PI, Math.PI * 2);
-      ctx.fill();
-
-      if (charId === 'girl') {
-        // Ponytail
-        ctx.beginPath();
-        ctx.arc(-13, -22, 6, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        // Cap visor
-        ctx.fillStyle = p.accent;
-        ctx.fillRect(2, -26, 13, 4);
-      }
-
-      // Eyes & Smile
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      ctx.arc(5, -21, 2.2, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.arc(4, -17, 4, 0.1 * Math.PI, 0.8 * Math.PI);
-      ctx.stroke();
-
-    } else if (charId === 'fox') {
-      const p = CHAR_PALETTES.fox;
-
-      // Fluffy Tail
-      ctx.fillStyle = p.fur;
-      ctx.beginPath();
-      ctx.ellipse(-16, 10, 11, 6, -0.4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = p.belly;
-      ctx.beginPath();
-      ctx.arc(-23, 7, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Legs
-      ctx.fillStyle = p.fur;
-      ctx.fillRect(-9, 9 + legSwing * 0.4, 6, 14);
-      ctx.fillRect(3, 9 - legSwing * 0.4, 6, 14);
-
-      // Body
-      ctx.fillStyle = p.fur;
-      ctx.beginPath();
-      ctx.roundRect(-12, -9, 24, 20, 8);
-      ctx.fill();
-
-      // White Belly Patch
-      ctx.fillStyle = p.belly;
-      ctx.beginPath();
-      ctx.ellipse(3, 1, 7, 9, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Emerald Scarf
-      ctx.fillStyle = p.scarf;
-      ctx.fillRect(-11, -10, 22, 5);
-
-      // Fox Head
-      ctx.fillStyle = p.fur;
-      ctx.beginPath();
-      ctx.arc(1, -20, 12.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pointy Ears
-      ctx.beginPath();
-      ctx.moveTo(-8, -28);
-      ctx.lineTo(-11, -40);
-      ctx.lineTo(-1, -31);
-      ctx.moveTo(4, -31);
-      ctx.lineTo(10, -40);
-      ctx.lineTo(11, -28);
-      ctx.fill();
-
-      // Muzzle & Eye
-      ctx.fillStyle = p.belly;
-      ctx.beginPath();
-      ctx.ellipse(8, -17, 7, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = p.earTip;
-      ctx.beginPath();
-      ctx.arc(14, -18, 2.3, 0, Math.PI * 2);
-      ctx.arc(5, -22, 2.2, 0, Math.PI * 2);
-      ctx.fill();
-
-    } else if (charId === 'robot') {
-      const p = CHAR_PALETTES.robot;
-
-      // Hover Thruster / Wheels
-      ctx.fillStyle = p.wheels;
-      ctx.beginPath();
-      ctx.roundRect(-11, 13, 22, 10, 5);
-      ctx.fill();
-
-      // Flame glow when moving/jumping
-      if (state === 'run' || state === 'jump' || state === 'celebrate') {
-        ctx.fillStyle = '#f59e0b';
-        ctx.beginPath();
-        ctx.arc(0, 25, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Metallic Body
-      ctx.fillStyle = p.body;
-      ctx.beginPath();
-      ctx.roundRect(-14, -8, 28, 22, 6);
-      ctx.fill();
-
-      // Chest Emblem
-      ctx.fillStyle = p.accent;
-      ctx.beginPath();
-      ctx.roundRect(-8, -3, 16, 10, 3);
-      ctx.fill();
-
-      // Robot Head
-      ctx.fillStyle = p.head;
-      ctx.beginPath();
-      ctx.roundRect(-14, -32, 28, 21, 7);
-      ctx.fill();
-
-      // Antenna
-      ctx.strokeStyle = p.accent;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(0, -32);
-      ctx.lineTo(0, -40);
-      ctx.stroke();
-      ctx.fillStyle = '#fde047';
-      ctx.beginPath();
-      ctx.arc(0, -41, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Digital Visor & Glowing Eyes
-      ctx.fillStyle = p.visor;
-      ctx.beginPath();
-      ctx.roundRect(-10, -27, 22, 11, 4);
-      ctx.fill();
-
-      ctx.fillStyle = p.eye;
-      ctx.beginPath();
-      ctx.arc(-2, -21.5, 2.5, 0, Math.PI * 2);
-      ctx.arc(7, -21.5, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Celebration stars around character
-    if (state === 'celebrate') {
-      ctx.fillStyle = '#fde047';
-      ctx.font = 'bold 14px sans-serif';
-      ctx.fillText('✨', -22, -32);
-      ctx.fillText('⭐', 14, -34);
-    }
-
-    ctx.restore();
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-10, 10 + legSwing * 0.3, 7, 14);
+    ctx.fillRect(3, 10 - legSwing * 0.3, 7, 14);
   }
 
   function draw(ctx, player, cameraOffset) {
-    const drawX = player.x - cameraOffset.x + player.w / 2;
-    const drawY = player.y - cameraOffset.y + player.h / 2;
+    const footX = player.x - cameraOffset.x + player.w / 2;
+    const footY = player.y - cameraOffset.y + player.h;
 
+    // Ground contact shadow
     ctx.save();
-    ctx.translate(drawX, drawY);
+    const shadowAlpha = player.onGround ? 0.32 : 0.16;
+    const shadowScale = player.onGround ? 1 : 0.72;
+    ctx.fillStyle = `rgba(15, 23, 42, ${shadowAlpha})`;
+    ctx.beginPath();
+    ctx.ellipse(footX, footY - 2, 26 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
 
-    if (player.state === 'tumble') {
-      ctx.rotate((player.tumbleTimer * 0.35));
-    } else {
-      ctx.scale(player.facing, 1);
+    const sprite = processedSprites[player.charId];
+
+    // Calculate lively procedural squash, stretch, bounce & tilt
+    let scaleX = 1;
+    let scaleY = 1;
+    let bounceY = 0;
+    let tilt = 0;
+
+    if (player.state === 'run') {
+      const cycle = player.animTimer * 0.34;
+      bounceY = -Math.abs(Math.sin(cycle)) * 6.5;
+      scaleX = 1 + Math.cos(cycle * 2) * 0.05;
+      scaleY = 1 - Math.cos(cycle * 2) * 0.05;
+      tilt = 0.08;
+    } else if (player.state === 'jump') {
+      if (player.vy < 0) {
+        scaleX = 0.91;
+        scaleY = 1.09;
+      } else {
+        scaleX = 1.05;
+        scaleY = 0.95;
+      }
+      tilt = -0.05;
+    } else if (player.state === 'celebrate') {
+      const pulse = Math.sin(player.animTimer * 0.45);
+      bounceY = -Math.abs(pulse) * 8;
+      scaleX = 1.04 + pulse * 0.05;
+      scaleY = 1.04 - pulse * 0.05;
+    } else if (player.state === 'idle') {
+      const breath = Math.sin(player.animTimer * 0.08);
+      scaleX = 1 - breath * 0.018;
+      scaleY = 1 + breath * 0.024;
     }
 
-    drawCharacterFigure(ctx, player.charId, player.w, player.h, player.state, player.animPhase);
+    ctx.save();
+    ctx.translate(footX, footY + bounceY);
+
+    if (player.state === 'tumble') {
+      ctx.translate(0, -player.h / 2);
+      ctx.rotate(player.tumbleTimer * 0.36);
+      ctx.translate(0, player.h / 2);
+    } else {
+      ctx.scale(player.facing, 1);
+      ctx.rotate(tilt);
+      ctx.scale(scaleX, scaleY);
+    }
+
+    // Golden celebration aura when answering correctly
+    if (player.state === 'celebrate') {
+      const glow = ctx.createRadialGradient(0, -44, 6, 0, -44, 54);
+      glow.addColorStop(0, 'rgba(253, 224, 71, 0.55)');
+      glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, -44, 54, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (sprite) {
+      const targetH = 88;
+      const ratio = sprite.width / Math.max(1, sprite.height);
+      const targetW = Math.round(targetH * ratio);
+      ctx.drawImage(sprite, -targetW / 2, -targetH + 3, targetW, targetH);
+    } else {
+      ctx.translate(0, -player.h / 2);
+      drawFallbackVector(ctx, player.charId, player.w, player.h, player.state, player.animPhase);
+    }
+
+    if (player.state === 'celebrate') {
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('✨', -32, -74);
+      ctx.fillText('⭐', 20, -78);
+    }
+
     ctx.restore();
   }
 
   function renderPreview(canvas, charId) {
     if (!canvas) return;
+    pendingPreviews[charId] = canvas;
+
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Subtle radial backdrop
+    // Rich golden & royal radial glow behind 3D hero
     const grad = ctx.createRadialGradient(
       canvas.width / 2,
-      canvas.height / 2,
+      canvas.height / 2 + 4,
       8,
       canvas.width / 2,
-      canvas.height / 2,
-      52
+      canvas.height / 2 + 4,
+      56
     );
-    grad.addColorStop(0, 'rgba(253, 224, 71, 0.25)');
+    grad.addColorStop(0, 'rgba(253, 224, 71, 0.35)');
+    grad.addColorStop(0.65, 'rgba(124, 58, 237, 0.16)');
     grad.addColorStop(1, 'rgba(15, 23, 42, 0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2 + 12);
-    ctx.scale(1.35, 1.35);
-    drawCharacterFigure(ctx, charId, 44, 58, 'idle', 0);
-    ctx.restore();
+    const sprite = processedSprites[charId];
+    if (sprite) {
+      const maxH = canvas.height - 14;
+      const maxW = canvas.width - 14;
+      const scale = Math.min(maxW / Math.max(1, sprite.width), maxH / Math.max(1, sprite.height));
+      const drawW = Math.round(sprite.width * scale);
+      const drawH = Math.round(sprite.height * scale);
+      const drawX = Math.round((canvas.width - drawW) / 2);
+      const drawY = Math.round((canvas.height - drawH) / 2) + 2;
+
+      // Soft drop shadow beneath hero in selection card
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.32)';
+      ctx.beginPath();
+      ctx.ellipse(canvas.width / 2, drawY + drawH - 3, drawW * 0.32, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.drawImage(sprite, drawX, drawY, drawW, drawH);
+    } else {
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2 + 12);
+      ctx.scale(1.3, 1.3);
+      drawFallbackVector(ctx, charId, 48, 68, 'idle', 0);
+      ctx.restore();
+    }
   }
+
+  // Start preloading & removing white backgrounds immediately
+  preloadAllSprites();
 
   return {
     createPlayer,
@@ -420,4 +486,4 @@ const PlayerController = (() => {
     draw,
     renderPreview
   };
-})();
+})(); 
