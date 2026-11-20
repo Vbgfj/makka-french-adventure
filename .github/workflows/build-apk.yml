@@ -26,8 +26,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 4. Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: 4. Configure Pre-installed Android SDK
+        run: |
+          echo "ANDROID_HOME=${ANDROID_HOME}"
+          yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
 
       - name: 5. Install Project Dependencies
         run: npm install
@@ -48,6 +50,8 @@ jobs:
       - name: 8. Generate App Icon & Splash Assets
         run: |
           if [ -f "resources/icon.png" ]; then
+            mkdir -p assets
+            cp resources/icon.png assets/icon.png
             npx capacitor-assets generate --android || true
           fi
 
