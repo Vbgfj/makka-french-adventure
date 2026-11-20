@@ -1,0 +1,434 @@
+{
+  "appTitle": "Makka French Adventure",
+  "teacher": "Mr. Alaa Eid",
+  "center": "Makka Center",
+  "grade": "1ère Année Secondaire — 1er Trimestre (2026–2027)",
+  "lessons": [
+    {
+      "id": "world-0",
+      "unit": "World 0 • الأساسيات والنطق",
+      "shortTitle": "World 0 • Les Bases",
+      "title": "Les Bases : Alphabet, Prononciation & Saluts",
+      "difficulty": "Débutant • تمهيدي",
+      "pages": "ص 2 – 13",
+      "questions": [
+        {
+          "type": "mcq",
+          "topic": "La prononciation • قواعد النطق",
+          "prompt": "Dans le mot « lycée », la lettre (c) se prononce comme : ............",
+          "hintAr": "حرف (c) إذا جاء بعده (e - i - y) يُنطق:",
+          "speechText": "lycée, cinéma, garçon",
+          "options": ["[s] مثل السين", "[k] مثل الكاف", "[g] مثل الجيم"],
+          "answer": "[s] مثل السين"
+        },
+        {
+          "type": "matching",
+          "topic": "Les saluts • التحيات",
+          "prompt": "Associe chaque salutation à sa traduction :",
+          "hintAr": "اضغط على التحية بالفرنسية ثم معناها بالعربية:",
+          "speechText": "Bonjour, Bonsoir, Bonne nuit, Au revoir",
+          "pairs": [
+            { "fr": "Bonjour", "ar": "صباح الخير" },
+            { "fr": "Bonsoir", "ar": "مساء الخير" },
+            { "fr": "Bonne nuit", "ar": "طابت ليلتك" },
+            { "fr": "Au revoir", "ar": "إلى اللقاء" }
+          ],
+          "answer": "Bonjour = صباح الخير | Bonsoir = مساء الخير"
+        },
+        {
+          "type": "true_false",
+          "topic": "Les jours de la semaine • أيام الأسبوع",
+          "prompt": "En France, la semaine commence le lundi.",
+          "hintAr": "في فرنسا، يبدأ الأسبوع يوم الإثنين (lundi):",
+          "speechText": "En France, la semaine commence le lundi",
+          "options": ["Vrai (صح)", "Faux (خطأ)"],
+          "answer": "Vrai (صح)"
+        },
+        {
+          "type": "fr_to_ar",
+          "topic": "Les saisons • فصول السنة",
+          "prompt": "Que signifie « Le printemps » en arabe ?",
+          "hintAr": "اختر المعنى الصحيح لكلمة (Le printemps):",
+          "speechText": "Le printemps",
+          "options": ["الربيع", "الخريف", "الشتاء"],
+          "answer": "الربيع"
+        },
+        {
+          "type": "conjugation",
+          "topic": "Le présent (-er) • المضارع",
+          "prompt": "Conjugue le verbe (parler) : Nous ............ français.",
+          "hintAr": "اكتب تصريف فعل (parler) مع الضمير (Nous):",
+          "speechText": "Nous parlons français",
+          "placeholder": "اكتب الفعل مصرفاً...",
+          "answer": "parlons",
+          "acceptedAnswers": ["parlons", "nous parlons"]
+        }
+      ]
+    },
+    {
+      "id": "u1-l1",
+      "unit": "Unité 1 • Le Club de ma classe",
+      "shortTitle": "Unité 1 • Leçon 1",
+      "title": "Leçon 1 : Se présenter (تقديم النفس والتحيات)",
+      "difficulty": "Facile • سهل",
+      "pages": "ص 14 – 20",
+      "questions": [
+        {
+          "type": "mcq",
+          "topic": "Les saluts • التحيات",
+          "prompt": "Tu rencontres un ami le matin, tu dis : ............",
+          "hintAr": "تقابل صديقك في الصباح، تقول له:",
+          "speechText": "Bonjour !",
+          "options": ["Bonjour !", "Bonsoir !", "Bonne nuit !"],
+          "answer": "Bonjour !"
+        },
+        {
+          "type": "dialogue",
+          "topic": "Se présenter • تقديم النفس",
+          "prompt": "— Comment tu t'appelles ?\n— Moi, je ............ Nicolas.",
+          "hintAr": "أكمل الحوار بالتصريف الصحيح لفعل (s'appeler):",
+          "speechText": "Comment tu t'appelles ? Moi, je m'appelle Nicolas.",
+          "options": ["m'appelle", "t'appelles", "s'appelle"],
+          "answer": "m'appelle"
+        },
+        {
+          "type": "fill_blank",
+          "topic": "Les articles indéfinis • أدوات النكرة",
+          "prompt": "Voici Camille, ............ amie du collège.",
+          "hintAr": "اختر أداة النكرة المناسبة لكلمة (amie) المفرد المؤنث:",
+          "speechText": "Voici Camille, une amie du collège.",
+          "options": ["un", "une", "des"],
+          "answer": "une"
+        },
+        {
+          "type": "ordering",
+          "topic": "La phrase française • ترتيب الجملة",
+          "prompt": "Remets les mots en ordre pour présenter un voisin :",
+          "hintAr": "رتّب الكلمات لتكوين جملة صحيحة:",
+          "speechText": "C'est Théo, un voisin",
+          "words": ["voisin", "C'est", "Théo,", "un"],
+          "answer": "C'est Théo, un voisin",
+          "acceptedAnswers": ["C'est Théo, un voisin", "Théo, c'est un voisin"]
+        },
+        {
+          "type": "mcq",
+          "topic": "Prendre congé • الاستئذان والوداع",
+          "prompt": "Pour quitter un ami, tu dis : ............",
+          "hintAr": "عندما تودّع صديقك وتنصرف، تقول له:",
+          "speechText": "Au revoir ! À plus !",
+          "options": ["Au revoir !", "Bienvenue !", "Bonjour !"],
+          "answer": "Au revoir !"
+        }
+      ]
+    },
+    {
+      "id": "u1-l2",
+      "unit": "Unité 1 • Le Club de ma classe",
+      "shortTitle": "Unité 1 • Leçon 2",
+      "title": "Leçon 2 : Présenter et identifier ses copains",
+      "difficulty": "Facile • سهل",
+      "pages": "ص 21 – 29",
+      "questions": [
+        {
+          "type": "mcq",
+          "topic": "Le féminin • تأنيث الصفات",
+          "prompt": "Hoda est très ............ .",
+          "hintAr": "اختر الصفة المفرد المؤنث المناسبة لـ (Hoda):",
+          "speechText": "Hoda est très souriante.",
+          "options": ["souriante", "souriant", "bavard"],
+          "answer": "souriante"
+        },
+        {
+          "type": "true_false",
+          "topic": "Les couleurs • الألوان",
+          "prompt": "L'adjectif de couleur « marron » ne change pas au féminin.",
+          "hintAr": "صفة اللون (marron - بني) تبقى كما هي عند التأنيث:",
+          "speechText": "marron, orange",
+          "options": ["Vrai (صح)", "Faux (خطأ)"],
+          "answer": "Vrai (صح)"
+        },
+        {
+          "type": "conjugation",
+          "topic": "Verbe être • تصريف فعل يكون",
+          "prompt": "Paul et Martin ............ des amis du basket.",
+          "hintAr": "اختر تصريف فعل (être) المناسب لجمع المذكر (ils):",
+          "speechText": "Paul et Martin sont des amis du basket.",
+          "options": ["sont", "sommes", "est"],
+          "answer": "sont"
+        },
+        {
+          "type": "matching",
+          "topic": "Le matériel de classe • الأدوات المدرسية",
+          "prompt": "Associe chaque objet scolaire à son sens :",
+          "hintAr": "وصّل كل أداة مدرسية بمعناها بالعربية:",
+          "speechText": "Un stylo, Une gomme, Un cahier, Une règle",
+          "pairs": [
+            { "fr": "Un stylo", "ar": "قلم حبر" },
+            { "fr": "Une gomme", "ar": "أستيكة (ممحاة)" },
+            { "fr": "Un cahier", "ar": "كراسة" },
+            { "fr": "Une règle", "ar": "مسطرة" }
+          ],
+          "answer": "Un stylo = قلم حبر | Une gomme = أستيكة"
+        },
+        {
+          "type": "fill_blank",
+          "topic": "Les articles définis • أدوات المعرفة",
+          "prompt": "............ élèves sont dans la cour.",
+          "hintAr": "اختر أداة المعرفة المناسبة لاسم الجمع (élèves):",
+          "speechText": "Les élèves sont dans la cour.",
+          "options": ["Les", "Le", "La"],
+          "answer": "Les"
+        }
+      ]
+    },
+    {
+      "id": "u1-l3",
+      "unit": "Unité 1 • Le Club de ma classe",
+      "shortTitle": "Unité 1 • Leçon 3",
+      "title": "Leçon 3 : Parler du caractère (السمات الشخصية)",
+      "difficulty": "Moyen • متوسط",
+      "pages": "ص 30 – 41",
+      "questions": [
+        {
+          "type": "fr_to_ar",
+          "topic": "Le caractère • صفات الشخصية",
+          "prompt": "Que signifie l'adjectif « timide » en arabe ?",
+          "hintAr": "اختر الترجمة الصحيحة لصفة (timide):",
+          "speechText": "timide",
+          "options": ["خجول", "ثرثار", "شره"],
+          "answer": "خجول"
+        },
+        {
+          "type": "mcq",
+          "topic": "L'interrogation • أدوات الاستفهام",
+          "prompt": "............ est ta nationalité ? — Je suis égyptienne.",
+          "hintAr": "كلمة (nationalité) مفرد مؤنث، نختار لها:",
+          "speechText": "Quelle est ta nationalité ?",
+          "options": ["Quelle", "Quel", "Qui"],
+          "answer": "Quelle"
+        },
+        {
+          "type": "dialogue",
+          "topic": "Situations • المواقف اليومية",
+          "prompt": "Un ami te demande ta santé : « Comment ça va ? », tu réponds : ............",
+          "hintAr": "صديقك يسألك عن صحتك، ترد عليه:",
+          "speechText": "Ça va bien, merci.",
+          "options": ["Ça va bien, merci.", "J'ai 15 ans.", "Je m'appelle Sami."],
+          "answer": "Ça va bien, merci."
+        },
+        {
+          "type": "mcq",
+          "topic": "Connais-tu bien la France ? • ثقافة فرنسية",
+          "prompt": "Quelle est la monnaie actuelle de la France ?",
+          "hintAr": "ما هي العملة الحالية لفرنسا؟",
+          "speechText": "L'euro est la monnaie de la France.",
+          "options": ["L'euro", "Le franc", "La livre"],
+          "answer": "L'euro"
+        },
+        {
+          "type": "ar_to_fr",
+          "topic": "Traduction • ترجمة للفرنسية",
+          "prompt": "Écris en français : أنا مصري (للمذكر)",
+          "hintAr": "اكتب الجملة بالفرنسية (Je suis ...):",
+          "speechText": "Je suis égyptien",
+          "placeholder": "Je suis ...",
+          "answer": "Je suis égyptien",
+          "acceptedAnswers": ["Je suis égyptien", "je suis egyptien"]
+        }
+      ]
+    },
+    {
+      "id": "u2-l1",
+      "unit": "Unité 2 • Le Club des artistes",
+      "shortTitle": "Unité 2 • Leçon 1",
+      "title": "Leçon 1 : Identifier et décrire des objets",
+      "difficulty": "Moyen • متوسط",
+      "pages": "ص 42 – 48",
+      "questions": [
+        {
+          "type": "mcq",
+          "topic": "Identifier un objet • تحديد الأشياء",
+          "prompt": "— Qu'est-ce que c'est ?\n— C'est ............ bracelet brésilien.",
+          "hintAr": "كلمة (bracelet) مفرد مذكر، نختار لها:",
+          "speechText": "C'est un bracelet brésilien.",
+          "options": ["un", "une", "des"],
+          "answer": "un"
+        },
+        {
+          "type": "matching",
+          "topic": "Les parties de la maison • أجزاء المنزل",
+          "prompt": "Associe chaque pièce de la maison à sa traduction :",
+          "hintAr": "وصّل كل جزء من أجزاء المنزل بمعناه:",
+          "speechText": "Une chambre, Une cuisine, Un salon, Un jardin",
+          "pairs": [
+            { "fr": "Une chambre", "ar": "حجرة" },
+            { "fr": "Une cuisine", "ar": "مطبخ" },
+            { "fr": "Un salon", "ar": "صالون" },
+            { "fr": "Un jardin", "ar": "حديقة" }
+          ],
+          "answer": "Une chambre = حجرة | Une cuisine = مطبخ"
+        },
+        {
+          "type": "fill_blank",
+          "topic": "Le pluriel • قاعدة الجمع",
+          "prompt": "Ce sont ............ garçons actifs.",
+          "hintAr": "تُحوّل (des) إلى (de) إذا جاء بعدها صفة جمع قبل الاسم:",
+          "speechText": "Ce sont de garçons actifs.",
+          "options": ["de", "des", "un"],
+          "answer": "de"
+        },
+        {
+          "type": "true_false",
+          "topic": "Compréhension • فهم المقروء",
+          "prompt": "Dans la chambre d'Alex, Alex fait un bracelet brésilien pour son copain Hugo.",
+          "hintAr": "في حوار غرفة أليكس، أليكس يصنع سوار صداقة لصديقه هوجو:",
+          "speechText": "Alex fait un bracelet brésilien pour Hugo.",
+          "options": ["Vrai (صح)", "Faux (خطأ)"],
+          "answer": "Vrai (صح)"
+        },
+        {
+          "type": "mcq",
+          "topic": "Accord des couleurs • تطابق الألوان",
+          "prompt": "Il a les yeux ............ .",
+          "hintAr": "كلمة (yeux) جمع مذكر، فنختار صفة اللون الجمع المذكر:",
+          "speechText": "Il a les yeux bleus.",
+          "options": ["bleus", "bleues", "bleu"],
+          "answer": "bleus"
+        }
+      ]
+    },
+    {
+      "id": "u2-l2",
+      "unit": "Unité 2 • Le Club des artistes",
+      "shortTitle": "Unité 2 • Leçon 2",
+      "title": "Leçon 2 : Demander l'âge et la date d'anniversaire",
+      "difficulty": "Moyen • متوسط",
+      "pages": "ص 49 – 52",
+      "questions": [
+        {
+          "type": "conjugation",
+          "topic": "Verbe avoir • التعبير عن العمر",
+          "prompt": "Quel âge ............-vous ? — Nous avons 15 ans.",
+          "hintAr": "نستخدم فعل (avoir) للسؤال عن العمر مع الضمير (vous):",
+          "speechText": "Quel âge avez-vous ?",
+          "options": ["avez", "êtes", "ont"],
+          "answer": "avez"
+        },
+        {
+          "type": "mcq",
+          "topic": "Les nombres • الأعداد",
+          "prompt": "Comment écrit-on le nombre (70) en français ?",
+          "hintAr": "اختر الكتابة الصحيحة للرقم 70 بالفرنسية:",
+          "speechText": "soixante-dix",
+          "options": ["soixante-dix", "soixante", "quatre-vingts"],
+          "answer": "soixante-dix"
+        },
+        {
+          "type": "fill_blank",
+          "topic": "La date • التاريخ وعيد الميلاد",
+          "prompt": "Ezz El Din est né ............ 22 août.",
+          "hintAr": "تُسبق التواريخ المحددة برقم بأداة المعرفة:",
+          "speechText": "Je suis né le 22 août.",
+          "options": ["le", "en", "au"],
+          "answer": "le"
+        },
+        {
+          "type": "ordering",
+          "topic": "Demander l'âge • ترتيب السؤال",
+          "prompt": "Remets les mots en ordre pour demander l'âge :",
+          "hintAr": "رتّب الكلمات لتكوين سؤال عن العمر:",
+          "speechText": "Quel âge as-tu ?",
+          "words": ["tu", "Quel", "as", "âge"],
+          "answer": "Quel âge as tu",
+          "acceptedAnswers": ["Quel âge as tu", "Quel âge as-tu", "Quel âge tu as"]
+        },
+        {
+          "type": "true_false",
+          "topic": "La famille • الأسرة",
+          "prompt": "Dans le texte « Je vous présente ma famille », la mère s'appelle Viviane et elle est comptable.",
+          "hintAr": "في نص تقديم الأسرة، الأم اسمها فيفيان وتعمل محاسبة:",
+          "speechText": "Elle s'appelle Viviane et elle est comptable.",
+          "options": ["Vrai (صح)", "Faux (خطأ)"],
+          "answer": "Vrai (صح)"
+        }
+      ]
+    },
+    {
+      "id": "u2-l3",
+      "unit": "Unité 2 • Le Club des artistes",
+      "shortTitle": "Unité 2 • Leçon 3",
+      "title": "Leçon 3 : Exprimer ses goûts (التعبير عن الميول)",
+      "difficulty": "Avancé • متقدم",
+      "pages": "ص 53 – 65",
+      "questions": [
+        {
+          "type": "fill_blank",
+          "topic": "Les verbes de goût • أفعال الميول",
+          "prompt": "J'aime ............ natation et je préfère le tennis.",
+          "hintAr": "تُسبق الرياضات بعد أفعال الميول (aimer) بأداة معرفة:",
+          "speechText": "J'aime la natation et je préfère le tennis.",
+          "options": ["la", "le", "de la"],
+          "answer": "la"
+        },
+        {
+          "type": "mcq",
+          "topic": "La phrase négative • الجملة المنفية",
+          "prompt": "Adel a un frère. → À la forme négative : Adel n'a pas ............ frère.",
+          "hintAr": "عند النفي تتحول أدوات النكرة (un, une, des) إلى:",
+          "speechText": "Adel n'a pas de frère.",
+          "options": ["de", "un", "des"],
+          "answer": "de"
+        },
+        {
+          "type": "matching",
+          "topic": "Les matières scolaires • المواد الدراسية",
+          "prompt": "Associe chaque matière scolaire à sa traduction :",
+          "hintAr": "وصّل كل مادة دراسية بمعناها بالعربية:",
+          "speechText": "Les maths, La chimie, L'histoire, La géographie",
+          "pairs": [
+            { "fr": "Les maths", "ar": "الرياضيات" },
+            { "fr": "La chimie", "ar": "الكيمياء" },
+            { "fr": "L'histoire", "ar": "التاريخ" },
+            { "fr": "La géographie", "ar": "الجغرافيا" }
+          ],
+          "answer": "Les maths = الرياضيات | La chimie = الكيمياء"
+        },
+        {
+          "type": "fill_blank",
+          "topic": "Les pronoms toniques • الضمائر التوكيدية",
+          "prompt": "............, je m'appelle Sophie, et toi ?",
+          "hintAr": "اختر الضمير التوكيدي المناسب للمتكلم (je):",
+          "speechText": "Moi, je m'appelle Sophie, et toi ?",
+          "options": ["Moi", "Toi", "Je"],
+          "answer": "Moi"
+        },
+        {
+          "type": "dialogue",
+          "topic": "Situations • المواقف الشاملة",
+          "prompt": "Tu demandes à un ami comment il va à l'école, tu dis : ............",
+          "hintAr": "تسأل صديقك عن وسيلة المواصلات التي يذهب بها للمدرسة:",
+          "speechText": "Comment vas-tu à l'école ?",
+          "options": [
+            "Comment vas-tu à l'école ?",
+            "Comment ça va ?",
+            "Quelle matière préfères-tu ?"
+          ],
+          "answer": "Comment vas-tu à l'école ?"
+        },
+        {
+          "type": "mcq",
+          "topic": "Les monuments • الأماكن السياحية",
+          "prompt": "Où se trouve « Le musée du Louvre » ?",
+          "hintAr": "أين يقع متحف اللوفر؟",
+          "speechText": "Le musée du Louvre est à Paris.",
+          "options": [
+            "En France (à Paris)",
+            "En Égypte (au Caire)",
+            "En Italie (à Rome)"
+          ],
+          "answer": "En France (à Paris)"
+        }
+      ]
+    }
+  ]
+}
