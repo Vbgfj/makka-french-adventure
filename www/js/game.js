@@ -1,5 +1,5 @@
 /* =========================================================
-   MAKKA FRENCH ADVENTURE — 2D Side-Scrolling Game Engine
+   MAKKA FRENCH ADVENTURE — 3D-Style 2D Adventure Engine
    Created for Mr. Alaa Eid — Makka Center
    ========================================================= */
 
@@ -28,6 +28,7 @@ const GameEngine = (() => {
   let coins = [];
   let checkpoints = [];
   let clouds = [];
+  let floatingGlyphs = [];
   let particles = [];
   let treasureChest = null;
 
@@ -68,7 +69,7 @@ const GameEngine = (() => {
     }
 
     const oldGroundY = groundY;
-    groundY = Math.max(210, viewHeight - 92);
+    groundY = Math.max(215, viewHeight - 92);
     const deltaY = groundY - oldGroundY;
 
     if (player) {
@@ -94,11 +95,11 @@ const GameEngine = (() => {
   function buildWorldForLesson(lesson) {
     const questions = Array.isArray(lesson.questions) ? lesson.questions : [];
     const totalQ = Math.max(1, questions.length);
-    const spacing = 540;
-    worldWidth = 520 + totalQ * spacing + 420;
+    const spacing = 560;
+    worldWidth = 540 + totalQ * spacing + 440;
 
-    groundY = Math.max(210, viewHeight - 92);
-    player = PlayerController.createPlayer(selectedCharacter, 85, groundY - 58);
+    groundY = Math.max(215, viewHeight - 92);
+    player = PlayerController.createPlayer(selectedCharacter, 85, groundY - 68);
 
     platforms = [];
     riverZones = [];
@@ -106,86 +107,99 @@ const GameEngine = (() => {
     checkpoints = [];
     particles = [];
 
-    // Generate drifting clouds
+    // Generate lush layered clouds
     clouds = [];
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 15; i++) {
       clouds.push({
-        x: i * 290 + 60,
-        y: 55 + (i % 3) * 34,
-        scale: 0.75 + (i % 3) * 0.22,
-        speed: 0.18 + (i % 2) * 0.1
+        x: i * 280 + 50,
+        y: 48 + (i % 3) * 32,
+        scale: 0.78 + (i % 3) * 0.22,
+        speed: 0.16 + (i % 2) * 0.09
       });
     }
 
-    // Build platforms, rivers, bonus coins, and educational checkpoints
-    for (let i = 0; i < totalQ; i++) {
-      const sectionStart = 320 + i * spacing;
-      const cpX = sectionStart + 330;
+    // Ambient glowing French letters floating in the sky (matching app icon)
+    const glyphs = ['A', 'É', 'Ç', 'À', 'Ê', '★'];
+    floatingGlyphs = [];
+    for (let i = 0; i < 16; i++) {
+      floatingGlyphs.push({
+        char: glyphs[i % glyphs.length],
+        x: 180 + i * 250,
+        baseY: 72 + (i % 4) * 36,
+        phase: i * 1.1,
+        color: i % 2 === 0 ? '#fde047' : '#38bdf8'
+      });
+    }
 
-      // Elevated stepping platforms before each checkpoint
+    // Build 3D beveled platforms, glowing rivers, bonus coins, and royal checkpoints
+    for (let i = 0; i < totalQ; i++) {
+      const sectionStart = 330 + i * spacing;
+      const cpX = sectionStart + 345;
+
+      // Elevated 3D stepping platforms
       platforms.push({
-        x: sectionStart + 40,
-        y: groundY - 76,
-        w: 115,
-        h: 18,
+        x: sectionStart + 38,
+        y: groundY - 82,
+        w: 122,
+        h: 24,
         style: 'grass'
       });
 
       platforms.push({
-        x: sectionStart + 185,
-        y: groundY - 125,
-        w: 105,
-        h: 18,
+        x: sectionStart + 188,
+        y: groundY - 134,
+        w: 114,
+        h: 24,
         style: 'gold'
       });
 
-      // Decorative river & bridge in alternating segments
+      // Glowing emerald river & arched wooden bridge in alternating segments
       if (i % 2 === 0) {
         riverZones.push({
-          x: sectionStart + 70,
-          w: 170
+          x: sectionStart + 68,
+          w: 180
         });
       }
 
-      // Bonus floating coins along the path
+      // Bonus floating 3D coins along the path
       coins.push({
-        x: sectionStart + 88,
-        y: groundY - 115,
-        baseY: groundY - 115,
-        r: 12,
+        x: sectionStart + 98,
+        y: groundY - 122,
+        baseY: groundY - 122,
+        r: 14,
         collected: false,
-        phase: i * 0.8
+        phase: i * 0.9
       });
       coins.push({
-        x: sectionStart + 228,
-        y: groundY - 165,
-        baseY: groundY - 165,
-        r: 12,
+        x: sectionStart + 244,
+        y: groundY - 174,
+        baseY: groundY - 174,
+        r: 14,
         collected: false,
-        phase: i * 0.8 + 1.2
+        phase: i * 0.9 + 1.4
       });
 
-      // Educational Checkpoint Gate
+      // Ornate Parisian Checkpoint Archway
       checkpoints.push({
         index: i,
         x: cpX,
-        y: groundY - 96,
-        w: 46,
-        h: 96,
+        y: groundY - 114,
+        w: 64,
+        h: 114,
         question: questions[i],
         cleared: false,
         barrierOpen: false,
-        safeX: sectionStart + 220
+        safeX: sectionStart + 225
       });
     }
 
-    // Final Golden Treasure Chest at the end of the world
-    const lastCpX = checkpoints.length > 0 ? checkpoints[checkpoints.length - 1].x : 600;
+    // Final Royal Golden Treasure Chest
+    const lastCpX = checkpoints.length > 0 ? checkpoints[checkpoints.length - 1].x : 620;
     treasureChest = {
-      x: lastCpX + 260,
-      y: groundY - 54,
-      w: 64,
-      h: 54,
+      x: lastCpX + 270,
+      y: groundY - 64,
+      w: 76,
+      h: 64,
       opened: false
     };
 
@@ -219,19 +233,19 @@ const GameEngine = (() => {
     if (el) el.textContent = msg;
   }
 
-  function spawnParticles(x, y, color, count = 16) {
+  function spawnParticles(x, y, color, count = 18) {
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-      const speed = 2 + Math.random() * 4.5;
+      const speed = 2.2 + Math.random() * 4.8;
       particles.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
-        life: 32 + Math.floor(Math.random() * 14),
-        maxLife: 46,
+        vy: Math.sin(angle) * speed - 2.2,
+        life: 34 + Math.floor(Math.random() * 14),
+        maxLife: 48,
         color,
-        size: 4 + Math.random() * 4
+        size: 4 + Math.random() * 4.5
       });
     }
   }
@@ -264,14 +278,14 @@ const GameEngine = (() => {
           correctCount += 1;
           AudioManager.playCorrect();
           setTimeout(() => AudioManager.playCoin(), 220);
-          spawnParticles(cp.x + 20, cp.y + 30, '#fde047', 22);
+          spawnParticles(cp.x + cp.w / 2, cp.y + 36, '#fde047', 26);
           PlayerController.triggerForwardLeap(player);
           setBannerMessage('🎉 برافو! +10 نقط وعملة ذهبية!');
         } else {
           incorrectCount += 1;
           AudioManager.playWrong();
           CameraController.triggerShake(5, 10);
-          spawnParticles(player.x + 22, player.y + 25, '#fb923c', 12);
+          spawnParticles(player.x + 24, player.y + 30, '#fb923c', 14);
           PlayerController.triggerCartoonTumble(player, cp.safeX);
           setBannerMessage('💪 ولا يهمك! كمّل المغامرة للسؤال الجاي!');
         }
@@ -300,7 +314,7 @@ const GameEngine = (() => {
     if (treasureChest) treasureChest.opened = true;
 
     AudioManager.playVictory();
-    spawnParticles(treasureChest.x + 32, treasureChest.y + 15, '#fde047', 32);
+    spawnParticles(treasureChest.x + treasureChest.w / 2, treasureChest.y + 15, '#fde047', 38);
 
     const totalQ = Math.max(1, checkpoints.length);
     const accuracy = Math.round((correctCount / totalQ) * 100);
@@ -330,21 +344,19 @@ const GameEngine = (() => {
           stars
         });
       }
-    }, 950);
+    }, 980);
   }
 
   function updateWorld() {
     worldTime += 1;
 
-    // Drift clouds gently
     clouds.forEach((c) => {
       c.x -= c.speed;
-      if (c.x < -160) {
-        c.x = worldWidth + 120;
+      if (c.x < -180) {
+        c.x = worldWidth + 140;
       }
     });
 
-    // Update particles
     for (let i = particles.length - 1; i >= 0; i--) {
       const pt = particles[i];
       pt.x += pt.vx;
@@ -367,7 +379,7 @@ const GameEngine = (() => {
     for (let i = 0; i < checkpoints.length; i++) {
       const cp = checkpoints[i];
       if (!cp.barrierOpen) {
-        const triggerLine = cp.x - 18;
+        const triggerLine = cp.x - 14;
         if (player.x + player.w >= triggerLine) {
           player.x = triggerLine - player.w;
           player.vx = 0;
@@ -379,348 +391,6 @@ const GameEngine = (() => {
       }
     }
 
-    // Collect floating golden coins
+    // Collect floating 3D golden coins
     const playerBox = { x: player.x, y: player.y, w: player.w, h: player.h };
-    coins.forEach((c) => {
-      if (c.collected) return;
-      c.y = c.baseY + Math.sin(worldTime * 0.08 + c.phase) * 5;
-      const coinBox = { x: c.x - c.r, y: c.y - c.r, w: c.r * 2, h: c.r * 2 };
-      if (PhysicsEngine.rectsOverlap(playerBox, coinBox)) {
-        c.collected = true;
-        coinsCount += 1;
-        score += 2;
-        AudioManager.playCoin();
-        spawnParticles(c.x, c.y, '#fde047', 10);
-        updateHud();
-      }
-    });
-
-    // Check reaching the final Treasure Chest
-    if (
-      treasureChest &&
-      answeredCount >= checkpoints.length &&
-      PhysicsEngine.rectsOverlap(playerBox, treasureChest)
-    ) {
-      completeAdventure();
-    }
-  }
-
-  function drawBackground(camX) {
-    // Rich Royal & Sky Blue Gradient
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
-    skyGrad.addColorStop(0, '#1e3a8a');
-    skyGrad.addColorStop(0.55, '#0ea5e9');
-    skyGrad.addColorStop(1, '#bae6fd');
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, viewWidth, viewHeight);
-
-    // Glowing Sun
-    ctx.fillStyle = 'rgba(253, 224, 71, 0.25)';
-    ctx.beginPath();
-    ctx.arc(viewWidth - 95, 82, 46, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(viewWidth - 95, 82, 28, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Parallax Layer 1: Clouds
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-    clouds.forEach((c) => {
-      const screenX = c.x - camX * 0.25;
-      if (screenX < -140 || screenX > viewWidth + 140) return;
-      ctx.beginPath();
-      ctx.arc(screenX, c.y, 20 * c.scale, 0, Math.PI * 2);
-      ctx.arc(screenX + 18 * c.scale, c.y - 6 * c.scale, 24 * c.scale, 0, Math.PI * 2);
-      ctx.arc(screenX + 38 * c.scale, c.y, 18 * c.scale, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Parallax Layer 2: Distant Purple Hills & Stylized Eiffel Tower
-    ctx.fillStyle = '#4c1d95';
-    for (let hx = -200; hx < viewWidth + 400; hx += 340) {
-      const hillX = hx - ((camX * 0.35) % 340);
-      ctx.beginPath();
-      ctx.moveTo(hillX, groundY);
-      ctx.quadraticCurveTo(hillX + 170, groundY - 135, hillX + 340, groundY);
-      ctx.fill();
-    }
-
-    // Stylized Eiffel Tower Landmark in Background
-    const towerX = 480 - camX * 0.35;
-    if (towerX > -120 && towerX < viewWidth + 120) {
-      ctx.strokeStyle = 'rgba(253, 224, 71, 0.5)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(towerX - 36, groundY);
-      ctx.quadraticCurveTo(towerX - 10, groundY - 95, towerX, groundY - 175);
-      ctx.quadraticCurveTo(towerX + 10, groundY - 95, towerX + 36, groundY);
-      ctx.moveTo(towerX - 22, groundY - 55);
-      ctx.lineTo(towerX + 22, groundY - 55);
-      ctx.moveTo(towerX - 12, groundY - 105);
-      ctx.lineTo(towerX + 12, groundY - 105);
-      ctx.stroke();
-    }
-
-    // Parallax Layer 3: Midground Emerald Hills & Trees
-    ctx.fillStyle = '#059669';
-    for (let tx = -150; tx < viewWidth + 350; tx += 260) {
-      const mX = tx - ((camX * 0.55) % 260);
-      ctx.beginPath();
-      ctx.moveTo(mX, groundY);
-      ctx.quadraticCurveTo(mX + 130, groundY - 75, mX + 260, groundY);
-      ctx.fill();
-    }
-  }
-
-  function drawGroundAndRivers(camX) {
-    // Main Soil Base
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(0, groundY, viewWidth, viewHeight - groundY);
-
-    // Emerald Grass Top Strip
-    ctx.fillStyle = '#10b981';
-    ctx.fillRect(0, groundY, viewWidth, 16);
-    ctx.fillStyle = '#34d399';
-    ctx.fillRect(0, groundY, viewWidth, 5);
-
-    // Rivers with Wooden Adventure Bridges
-    riverZones.forEach((rz) => {
-      if (!CameraController.isVisible(rz.x, rz.w)) return;
-      const sx = rz.x - camX;
-
-      // Sparkling Blue Water
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(sx, groundY + 4, rz.w, viewHeight - groundY);
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(sx, groundY + 4, rz.w, 8);
-
-      // Wooden Bridge Planks over the river
-      ctx.fillStyle = '#b45309';
-      ctx.fillRect(sx - 6, groundY - 4, rz.w + 12, 10);
-      ctx.fillStyle = '#f59e0b';
-      for (let px = sx; px < sx + rz.w; px += 18) {
-        ctx.fillRect(px, groundY - 4, 12, 4);
-      }
-    });
-  }
-
-  function drawPlatforms(camX) {
-    platforms.forEach((p) => {
-      if (!CameraController.isVisible(p.x, p.w)) return;
-      const sx = p.x - camX;
-
-      ctx.fillStyle = p.style === 'gold' ? '#d97706' : '#047857';
-      ctx.beginPath();
-      ctx.roundRect(sx, p.y, p.w, p.h, 8);
-      ctx.fill();
-
-      ctx.fillStyle = p.style === 'gold' ? '#fde047' : '#34d399';
-      ctx.beginPath();
-      ctx.roundRect(sx + 2, p.y, p.w - 4, 6, 5);
-      ctx.fill();
-    });
-  }
-
-  function drawCoins(camX) {
-    coins.forEach((c) => {
-      if (c.collected || !CameraController.isVisible(c.x - c.r, c.r * 2)) return;
-      const sx = c.x - camX;
-
-      ctx.fillStyle = '#f59e0b';
-      ctx.beginPath();
-      ctx.arc(sx, c.y, c.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#fde047';
-      ctx.beginPath();
-      ctx.arc(sx - 2, c.y - 2, c.r * 0.72, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#92400e';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('★', sx, c.y + 4);
-    });
-  }
-
-  function drawCheckpoints(camX) {
-    checkpoints.forEach((cp) => {
-      if (!CameraController.isVisible(cp.x, cp.w)) return;
-      const sx = cp.x - camX;
-
-      // Checkpoint Pole
-      ctx.fillStyle = '#e2e8f0';
-      ctx.fillRect(sx + 8, cp.y, 6, cp.h);
-
-      // Flag Banner (Purple when locked, Emerald Green when cleared)
-      ctx.fillStyle = cp.cleared ? '#10b981' : '#7c3aed';
-      ctx.beginPath();
-      ctx.moveTo(sx + 14, cp.y + 6);
-      ctx.lineTo(sx + 54, cp.y + 22);
-      ctx.lineTo(sx + 14, cp.y + 38);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#fde047';
-      ctx.font = 'bold 13px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(cp.cleared ? '✓' : `Q${cp.index + 1}`, sx + 28, cp.y + 26);
-
-      // Magical Energy Barrier when not yet answered
-      if (!cp.barrierOpen) {
-        const pulse = 0.45 + Math.sin(worldTime * 0.12) * 0.2;
-        ctx.fillStyle = `rgba(245, 158, 11, ${pulse})`;
-        ctx.fillRect(sx - 4, cp.y - 10, 8, cp.h + 10);
-      }
-    });
-  }
-
-  function drawTreasureChest(camX) {
-    if (!treasureChest || !CameraController.isVisible(treasureChest.x, treasureChest.w)) return;
-    const sx = treasureChest.x - camX;
-    const sy = treasureChest.y;
-
-    // Chest Body
-    ctx.fillStyle = '#b45309';
-    ctx.beginPath();
-    ctx.roundRect(sx, sy + 18, treasureChest.w, 36, 6);
-    ctx.fill();
-
-    // Gold Trim
-    ctx.strokeStyle = '#fde047';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(sx + 2, sy + 20, treasureChest.w - 4, 32);
-
-    // Chest Lid
-    ctx.fillStyle = '#d97706';
-    const lidOffset = treasureChest.opened ? -14 : 0;
-    ctx.beginPath();
-    ctx.roundRect(sx - 2, sy + 6 + lidOffset, treasureChest.w + 4, 15, 6);
-    ctx.fill();
-
-    // Lock / Glow
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(sx + treasureChest.w / 2, sy + 24, 6, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('TRÉSOR', sx + treasureChest.w / 2, sy - 6);
-  }
-
-  function drawParticles(camX) {
-    particles.forEach((pt) => {
-      ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife);
-      ctx.fillStyle = pt.color;
-      ctx.beginPath();
-      ctx.arc(pt.x - camX, pt.y, pt.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-  }
-
-  function renderFrame() {
-    if (!ctx) return;
-    const cam = CameraController.getOffset();
-
-    ctx.save();
-    ctx.translate(0, cam.y);
-
-    drawBackground(cam.x);
-    drawGroundAndRivers(cam.x);
-    drawPlatforms(cam.x);
-    drawCoins(cam.x);
-    drawCheckpoints(cam.x);
-    drawTreasureChest(cam.x);
-    PlayerController.draw(ctx, player, cam);
-    drawParticles(cam.x);
-
-    ctx.restore();
-  }
-
-  function gameLoop() {
-    updateWorld();
-    renderFrame();
-    animFrameId = requestAnimationFrame(gameLoop);
-  }
-
-  function stopLoop() {
-    if (animFrameId) {
-      cancelAnimationFrame(animFrameId);
-      animFrameId = null;
-    }
-  }
-
-  function startLesson(lessonObj, charId, victoryCallback) {
-    stopLoop();
-    currentLesson = lessonObj;
-    selectedCharacter = charId || 'boy';
-    onVictoryDone = victoryCallback;
-
-    score = 0;
-    coinsCount = 0;
-    correctCount = 0;
-    incorrectCount = 0;
-    answeredCount = 0;
-    worldTime = 0;
-    inputState.left = false;
-    inputState.right = false;
-    inputState.jump = false;
-
-    if (!initCanvas()) return;
-    buildWorldForLesson(lessonObj);
-    updateHud();
-    setBannerMessage('امشِ لقدام لحد بوابة التحدي! 🚩');
-
-    gameState = 'PLAYING';
-    animFrameId = requestAnimationFrame(gameLoop);
-  }
-
-  function pause() {
-    if (gameState === 'PLAYING') {
-      gameState = 'PAUSED';
-    }
-  }
-
-  function resume() {
-    if (gameState === 'PAUSED') {
-      gameState = 'PLAYING';
-    }
-  }
-
-  function restart() {
-    if (currentLesson) {
-      QuestionEngine.closeModal();
-      startLesson(currentLesson, selectedCharacter, onVictoryDone);
-    }
-  }
-
-  function stop() {
-    stopLoop();
-    QuestionEngine.closeModal();
-    gameState = 'IDLE';
-  }
-
-  function setInput(direction, isActive) {
-    if (direction in inputState) {
-      inputState[direction] = Boolean(isActive);
-    }
-  }
-
-  window.addEventListener('resize', () => {
-    if (gameState !== 'IDLE') {
-      handleResize();
-    }
-  });
-
-  return {
-    startLesson,
-    pause,
-    resume,
-    restart,
-    stop,
-    setInput
-  };
-})();
+    coins.for 
