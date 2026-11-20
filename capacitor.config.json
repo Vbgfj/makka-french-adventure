@@ -1,0 +1,12 @@
+{
+  "appId": "com.makkacenter.frenchadventure",
+  "appName": "Makka French Adventure",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#1e3a8a"
+  }
+}
